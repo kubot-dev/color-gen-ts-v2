@@ -1,44 +1,11 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
 
-  const colorInput = ref('')
-  const processedInput = ref<string[]>([])
-  const inputMaxLength: number = 3
-  const inputCount = computed<number>(() => colorInput.value.length)
-  const generatedCombinations = ref<string[][]>([])
+  const input = ref('')
+  const inputMaxLength: number = 4
+  const inputCount = computed<number>(() => input.value.length)
 
-  const generateCombinations = () => {
-    generatedCombinations.value = cartesianProduct(
-      processedInput.value,
-      processedInput.value,
-      processedInput.value,
-      processedInput.value,
-      processedInput.value,
-      processedInput.value,
-    )
-    emit('@generate', generatedCombinations.value)
-  }
-
-  const emit = defineEmits<{
-    (e: '@generate', combinations: string[][]): void
-  }>()
-
-  function cartesianProduct<T>(...arrays: T[][]): T[][] {
-    return arrays.reduce<T[][]>(
-      (acc, val) => {
-        return acc.flatMap<T[]>((el) => {
-          return val.map<T[]>((v) => {
-            return el.concat(v)
-          })
-        })
-      },
-      [[]],
-    )
-  }
-
-  const processInput = (event: Event) => {
-    processedInput.value = colorInput.value.split('')
-
+  const limitInput = (event: Event) => {
     const inputElement = event.target as HTMLInputElement
     let { value } = inputElement
 
@@ -47,17 +14,17 @@
       inputElement.value = value
     }
 
-    colorInput.value = value
+    input.value = value
   }
 </script>
 <template>
   <div class="inputWrapper">
-    <h4>input up to 3 hexcode characters 0-1, a-f</h4>
-    <form class="input" @submit.prevent="generateCombinations">
-      <input type="text" v-model="colorInput" @input="processInput" placeholder="input hex characters" />
+    <h4>input up to 4 hexcode characters 0-1, a-f</h4>
+    <form class="input" @submit.prevent="$emit('@generate', input)">
+      <input type="text" @input="limitInput" v-model="input" placeholder="input hex characters" autofocus />
       <button class="generateBtn">Generate Colors</button>
     </form>
-    {{ inputCount }} / {{ inputMaxLength }}
+    <div>{{ inputCount }} / {{ inputMaxLength }}</div>
   </div>
 </template>
 <style scoped>

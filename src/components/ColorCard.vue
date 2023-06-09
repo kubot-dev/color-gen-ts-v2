@@ -1,28 +1,25 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import type Combination from '../types/Combination'
 
   const props = defineProps<{
-    colorCode?: string[]
+    colorCard: Combination
+    colorCode: string
   }>()
 
-  const bgColor = ref(props.colorCode?.join(''))
-
-  const checked = ref(false)
-
   const emit = defineEmits<{
-    (e: '@saveColor', checked: boolean, bgColor?: string): void
+    (e: '@saveColor', colorCard: Combination): void
   }>()
 
   const saveColor = () => {
-    checked.value = !checked.value
-    emit('@saveColor', checked.value, bgColor.value)
+    props.colorCard.checked = !props.colorCard.checked
+    emit('@saveColor', props.colorCard)
   }
 </script>
 
 <template>
   <div class="colorCard" @click="saveColor">
-    <input class="colorSelect" type="checkbox" v-model="checked" />
-    <p class="colorCode">#{{ bgColor }}</p>
+    <input class="colorSelect" type="checkbox" v-model="props.colorCard.checked" />
+    <p class="colorCode">#{{ props.colorCard.combination }}</p>
     <div class="colorPreview"></div>
   </div>
 </template>
@@ -37,8 +34,8 @@
 
     /* max-width: 320px; */
     height: auto;
-    border: 1px solid v-bind('#' + bgColor);
-    box-shadow: 0rem 0rem 1rem v-bind('#' + bgColor);
+    border: 1px solid v-bind('#' + colorCode + 50);
+    box-shadow: 0rem 0rem 1rem v-bind('#' + colorCode + 50);
     border-radius: 1rem;
     padding: 1rem;
 
@@ -46,8 +43,8 @@
   }
 
   .dark .colorCard {
-    border: 1px solid v-bind('#' + bgColor + 50);
-    box-shadow: 0rem 0rem 1rem v-bind('#' + bgColor + 50);
+    border: 1px solid v-bind('#' + colorCode + 50);
+    box-shadow: 0rem 0rem 1rem v-bind('#' + colorCode + 50);
   }
 
   .colorCode {
@@ -56,7 +53,7 @@
   .colorPreview {
     width: 150px;
     height: 75px;
-    background-color: v-bind('#' + bgColor);
+    background-color: v-bind('#' + colorCode);
     border-radius: 0.5rem;
   }
 </style>

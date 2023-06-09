@@ -2,24 +2,35 @@
   import { ref } from 'vue'
   import ColorCard from './ColorCard.vue'
   import SavedColors from './SavedColors.vue'
+  import type Combination from '../types/Combination'
 
   const props = defineProps<{
-    combinations: string[][]
+    combinations: Combination[]
   }>()
 
-  const savedColorsArray = ref<string[]>([])
+  const savedColorsArray = ref<Combination[]>([])
 
-  function savedColorToArray(checked: boolean, bgColor: string) {
-    if (checked === true) {
-      savedColorsArray.value.push(bgColor)
+  function savedColorToArray(colorCard: Combination) {
+    if (colorCard.checked === true) {
+      savedColorsArray.value.push(colorCard)
     } else {
-      savedColorsArray.value.pop()
+      const index = savedColorsArray.value.findIndex((savedItem) => savedItem.id === colorCard.id)
+      if (index > -1) {
+        savedColorsArray.value.splice(index, 1)
+      }
     }
   }
 </script>
 <template>
+  <div>Total Combinations: {{ combinations.length }}</div>
   <div class="generatedColors">
-    <ColorCard v-for="comb in props.combinations" :color-code="comb" @@save-color="savedColorToArray" />
+    <ColorCard
+      v-for="comb in props.combinations"
+      :color-card="comb"
+      :color-code="comb.combination"
+      @@save-color="savedColorToArray(comb)"
+      :key="comb.id"
+    />
   </div>
   <div class="savedColors">
     <SavedColors :saved-colors="savedColorsArray" />
