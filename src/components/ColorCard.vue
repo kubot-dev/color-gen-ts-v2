@@ -1,19 +1,19 @@
 <script setup lang="ts">
-  import type Combination from '../types/Combination'
+  import type Combination from '../types/Combination';
 
   const props = defineProps<{
-    colorCard: Combination
-    colorCode: string
-  }>()
+    colorCard: Combination;
+    colorCode: string;
+  }>();
 
   const emit = defineEmits<{
-    (e: '@saveColor', colorCard: Combination): void
-  }>()
+    (e: '@saveColor', colorCard: Combination): void;
+  }>();
 
   const saveColor = () => {
-    props.colorCard.checked = !props.colorCard.checked
-    emit('@saveColor', props.colorCard)
-  }
+    props.colorCard.checked = !props.colorCard.checked;
+    emit('@saveColor', props.colorCard);
+  };
 </script>
 
 <template>
@@ -39,7 +39,7 @@
     border-radius: 1rem;
     padding: 1rem;
 
-    flex: 1 1 220px;
+    flex: 1 1 120px;
   }
 
   .dark .colorCard {

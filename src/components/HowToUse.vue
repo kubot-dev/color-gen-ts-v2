@@ -20,7 +20,6 @@
         and copy to clipboard to share the picked color to a developer.
       </p>
       <p>Have fun 🎉</p>
-      <p><strong>Note:</strong> I understand that this might be useless. But i learned a lot during building this small project ✌️</p>
     </div>
   </div>
 </template>

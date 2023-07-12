@@ -1,22 +1,36 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import ColorCard from './ColorCard.vue'
-  import SavedColors from './SavedColors.vue'
-  import type Combination from '../types/Combination'
+  import { computed, ref, watch } from 'vue';
+  import ColorCard from './ColorCard.vue';
+  import SavedColors from './SavedColors.vue';
+  import type Combination from '../types/Combination';
 
   const props = defineProps<{
-    combinations: Combination[]
-  }>()
+    combinations: Combination[];
+    reset: Boolean;
+  }>();
 
-  const savedColorsArray = ref<Combination[]>([])
+  computed(() => {
+    if (props.reset === true) {
+      console.log('reset');
+    }
+  });
+
+  watch(
+    () => props.reset,
+    () => {
+      savedColorsArray.value = [];
+    },
+  );
+
+  const savedColorsArray = ref<Combination[]>([]);
 
   function savedColorToArray(colorCard: Combination) {
     if (colorCard.checked === true) {
-      savedColorsArray.value.push(colorCard)
+      savedColorsArray.value.push(colorCard);
     } else {
-      const index = savedColorsArray.value.findIndex((savedItem) => savedItem.id === colorCard.id)
+      const index = savedColorsArray.value.findIndex((savedItem) => savedItem.id === colorCard.id);
       if (index > -1) {
-        savedColorsArray.value.splice(index, 1)
+        savedColorsArray.value.splice(index, 1);
       }
     }
   }
@@ -33,7 +47,7 @@
     />
   </div>
   <div class="savedColors">
-    <SavedColors :saved-colors="savedColorsArray" />
+    <SavedColors :saved-colors="savedColorsArray" :reset="props.reset" />
   </div>
 </template>
 <style scoped>

@@ -1,11 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 :root {
+  --color-dark: #1f1f1f;
+  --color-dark-transparent: #1f1f1f14;
+  --color-light: #f1f1f1;
+  --color-light-transparent: #f1f1f114;
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: #1f1f1f;
-  background-color: #f1f1f1;
+  color: var(--color-dark);
+  background-color: var(--color-light);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -43,15 +48,15 @@ button {
 
   color: inherit;
   background-color: inherit;
-  border: 1px solid #1f1f1f14;
-  box-shadow: 0rem 0rem 1rem #1f1f1f14;
+  border: 1px solid var(--color-dark-transparent);
+  box-shadow: 0rem 0rem 1rem var(--color-dark-transparent);
 }
 
 .dark button {
   color: inherit;
   background-color: inherit;
-  border: 1px solid #f1f1f114;
-  box-shadow: 0rem 0rem 1rem #f1f1f114;
+  border: 1px solid var(--color-light-transparent);
+  box-shadow: 0rem 0rem 1rem var(--color-light-transparent);
 }
 button:hover {
   border-color: #646cff;
@@ -75,6 +80,6 @@ button:focus-visible {
 }
 
 .dark {
-  color: #f1f1f1;
-  background-color: #1f1f1f;
+  color: var(--color-light);
+  background-color: var(--color-dark);
 }

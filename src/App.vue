@@ -1,80 +1,94 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import ColorInput from './components/ColorInput.vue'
-  import GeneratedColors from './components/GeneratedColors.vue'
-  import HowToUse from './components/HowToUse.vue'
-  import { useDark, useToggle } from '@vueuse/core'
-  import type Combination from './types/Combination'
+  import { ref, watch } from 'vue';
+  import ColorInput from './components/ColorInput.vue';
+  import GeneratedColors from './components/GeneratedColors.vue';
+  import HowToUse from './components/HowToUse.vue';
+  import { useDark, useToggle } from '@vueuse/core';
+  import type Combination from './types/Combination';
 
-  const isDark = useDark()
-  const toggleDark = useToggle(isDark)
+  const isDark = useDark();
+  const toggleDark = useToggle(isDark);
 
-  const inputValue = ref('')
+  const inputValue = ref('');
 
-  const combinationsArray = ref<Combination[]>([])
+  const combinationsArray = ref<Combination[]>([]);
+
+  const resetSignal = ref(false);
 
   function cartesianProduct<T>(arrays: T[][]): T[][] {
-    const result: T[][] = []
+    const result: T[][] = [];
 
     function generateCombinations(currentArray: T[], currentIndex: number) {
       if (currentIndex === arrays.length) {
-        result.push(currentArray.slice())
-        return
+        result.push(currentArray.slice());
+        return;
       }
 
-      const currentSubArray = arrays[currentIndex]
+      const currentSubArray = arrays[currentIndex];
       for (let i = 0; i < currentSubArray.length; i++) {
-        currentArray[currentIndex] = currentSubArray[i]
-        generateCombinations(currentArray, currentIndex + 1)
+        currentArray[currentIndex] = currentSubArray[i];
+        generateCombinations(currentArray, currentIndex + 1);
       }
     }
 
-    generateCombinations(new Array(arrays.length), 0)
-    return result
+    generateCombinations(new Array(arrays.length), 0);
+    return result;
   }
 
   function generateCombinations(input: string): Combination[] {
-    const characters = input.split('')
-    const combinations: Combination[] = []
-    let id = 0
+    const characters = input.split('');
+    const combinations: Combination[] = [];
+    let id = 0;
 
-    const cartesianResult = cartesianProduct([characters, characters, characters, characters, characters, characters])
+    const cartesianResult = cartesianProduct([characters, characters, characters, characters, characters, characters]);
 
     for (const combination of cartesianResult) {
-      const combinationString = combination.join('')
+      const combinationString = combination.join('');
       if (containsAllCharacters(combinationString, characters)) {
-        combinationsArray.value.push({ id: ++id, checked: false, combination: combinationString })
+        combinationsArray.value.push({ id: ++id, checked: false, combination: combinationString });
       }
     }
 
-    return combinations
+    return combinations;
   }
 
   function containsAllCharacters(combination: string, characters: string[]): boolean {
     for (const character of characters) {
       if (!combination.includes(character)) {
-        return false
+        return false;
       }
     }
-    return true
+    return true;
   }
 
   const combinations = (passedInput: string) => {
-    combinationsArray.value = []
+    combinationsArray.value = [];
 
-    inputValue.value = passedInput
+    inputValue.value = passedInput;
 
-    generateCombinations(inputValue.value)
-  }
+    generateCombinations(inputValue.value);
+  };
+
+  const resetAll = () => {
+    resetSignal.value = !resetSignal.value;
+    // combinationsArray.value = [];
+  };
+
+  watch(
+    () => resetSignal.value,
+    () => {
+      combinationsArray.value = [];
+    },
+  );
 </script>
 
 <template>
   <nav>
-    <h2 class="logo">hexie.</h2>
+    <h2 @click="resetAll" class="logo">hexie.</h2>
     <button @click="toggleDark()">{{ isDark ? '🌒' : '☀️' }}</button>
   </nav>
-  <ColorInput @@generate="combinations" />
-  <GeneratedColors :combinations="combinationsArray" />
+  <ColorInput @@generate="combinations" :reset="resetSignal" />
+  <GeneratedColors :combinations="combinationsArray" :reset="resetSignal" />
   <HowToUse />
   <footer class="credit">built by <a target="_blank" href="https://kubot.dev/">kubot.dev</a></footer>
 </template>
@@ -86,6 +100,7 @@
     letter-spacing: 1px;
     transform: skew(-15deg, -5deg);
     transition: transform 150ms ease-out;
+    cursor: pointer;
   }
   nav {
     display: flex;
